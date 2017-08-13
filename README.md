@@ -1,0 +1,1 @@
+Just playing around with a blog using the serverless framework.
