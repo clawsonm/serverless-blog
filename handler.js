@@ -2,6 +2,7 @@
 
 const uuid = require('uuid');
 const AWS = require('aws-sdk');
+const Post = require('./Post.js');
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
@@ -22,43 +23,42 @@ module.exports.hello = (event, context, callback) => {
 
 module.exports.getPost = (event, context, callback) => {
   let slug = event.pathParameters.slug;
-  const params = {
-    TableName: process.env.POSTS_TABLE,
-    Key: {
-      slug: slug
+  let post = Post.get(slug);
+  let response;
+  post.then((post) => {
+    if (post === false) {
+      response = {
+        statusCode: 404,
+        body: JSON.stringify({message: 'Not Found'})
+      };
+    } else {
+      response = {
+        statusCode: 200,
+        body: JSON.stringify(post)
+      };
     }
-  };
-  dynamoDb.get(params, (error, result) => {
-    if (error) {
-      console.error(error);
-      callback(new Error(`Couldn't fetch post: ${slug}.`));
-      return;
-    }
-
-    const response = {
-      statusCode: 200,
-      body: JSON.stringify(result.Item)
-    };
-
     callback(null, response);
+  }).catch((error) => {
+    console.error(error);
+    callback(new Error('Couldn\'t fetch Post.'));
+    return;
   });
 };
 
 module.exports.listPosts = (event, context, callback) => {
-  dynamoDb.scan({TableName: process.env.POSTS_TABLE}, (error, result) => {
-    if (error) {
-      console.error(error);
-      callback(new Error('Couldn\'t fetch posts.'));
-      return;
-    }
+  let posts = Post.list();
+  posts.then((posts) => {
     const response = {
       statusCode: 200,
       body: JSON.stringify({
-        count: result.Items.length,
-        posts: result.Items
+        count: posts.length,
+        posts: posts
       })
     };
     callback(null, response);
+  }).catch((error) => {
+    console.error(error);
+    callback(new Error('Couldn\'t fetch list of Posts.'));
   });
 };
 
