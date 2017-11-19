@@ -92,6 +92,7 @@ module.exports.getCommentsForPost = (event, context, callback) => {
       callback(new Error('Couldn\'t fetch comments.'));
       return;
     }
+    let results = result.Items.filter(result => result.moderated);
     const response = {
       statusCode: 200,
       headers: {
@@ -99,8 +100,8 @@ module.exports.getCommentsForPost = (event, context, callback) => {
         "Access-Control-Allow-Credentials" : true // Required for cookies, authorization headers with HTTPS
       },
       body: JSON.stringify({
-        count: result.Items.length,
-        comments: result.Items
+        count: results.length,
+        comments: results
       })
     };
     callback(null, response);
@@ -125,7 +126,8 @@ module.exports.commentOnPost = (event, context, callback) => {
       name: data.name,
       body: data.body,
       created: timestamp,
-      updated: timestamp
+      updated: timestamp,
+      moderated: false
     }
   };
 
