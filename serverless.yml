@@ -84,11 +84,17 @@ functions:
   hello:
     handler: handler.hello
     events:
-      - http: GET hello
+      - http:
+          path: hello
+          method: get
+          cors: true
   listPosts:
     handler: handler.listPosts
     events:
-      - http: GET /posts
+      - http:
+          path: posts
+          method: get
+          cors: true
   getPost:
     handler: handler.getPost
     events:
@@ -99,6 +105,7 @@ functions:
             parameters:
               paths:
                 slug: true
+          cors: true
   getCommentsForPost:
     handler: handler.getCommentsForPost
     events:
@@ -109,6 +116,7 @@ functions:
             parameters:
               paths:
                 slug: true
+          cors: true
   commentOnPost:
     handler: handler.commentOnPost
     events:
@@ -119,6 +127,7 @@ functions:
             parameters:
               paths:
                 slug: true
+          cors: true
 
 #    The following are a few example events you can configure
 #    NOTE: Please make sure to change your handler code to work with those events

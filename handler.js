@@ -9,6 +9,10 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient();
 module.exports.hello = (event, context, callback) => {
   const response = {
     statusCode: 200,
+    headers: {
+      "Access-Control-Allow-Origin" : "*", // Required for CORS support to work
+      "Access-Control-Allow-Credentials" : true // Required for cookies, authorization headers with HTTPS
+    },
     body: JSON.stringify({
       message: 'Go Serverless v1.0! Your function executed successfully!',
       input: event
@@ -29,11 +33,19 @@ module.exports.getPost = (event, context, callback) => {
     if (post === false) {
       response = {
         statusCode: 404,
+        headers: {
+          "Access-Control-Allow-Origin" : "*", // Required for CORS support to work
+          "Access-Control-Allow-Credentials" : true // Required for cookies, authorization headers with HTTPS
+        },
         body: JSON.stringify({message: 'Not Found'})
       };
     } else {
       response = {
         statusCode: 200,
+        headers: {
+          "Access-Control-Allow-Origin" : "*", // Required for CORS support to work
+          "Access-Control-Allow-Credentials" : true // Required for cookies, authorization headers with HTTPS
+        },
         body: JSON.stringify(post)
       };
     }
@@ -50,6 +62,10 @@ module.exports.listPosts = (event, context, callback) => {
   posts.then((posts) => {
     const response = {
       statusCode: 200,
+      headers: {
+        "Access-Control-Allow-Origin" : "*", // Required for CORS support to work
+        "Access-Control-Allow-Credentials" : true // Required for cookies, authorization headers with HTTPS
+      },
       body: JSON.stringify({
         count: posts.length,
         posts: posts
@@ -78,6 +94,10 @@ module.exports.getCommentsForPost = (event, context, callback) => {
     }
     const response = {
       statusCode: 200,
+      headers: {
+        "Access-Control-Allow-Origin" : "*", // Required for CORS support to work
+        "Access-Control-Allow-Credentials" : true // Required for cookies, authorization headers with HTTPS
+      },
       body: JSON.stringify({
         count: result.Items.length,
         comments: result.Items
@@ -118,6 +138,10 @@ module.exports.commentOnPost = (event, context, callback) => {
 
     const response = {
       statusCode: 200,
+      headers: {
+        "Access-Control-Allow-Origin" : "*", // Required for CORS support to work
+        "Access-Control-Allow-Credentials" : true // Required for cookies, authorization headers with HTTPS
+      },
       body: JSON.stringify(params.Item)
     };
     callback(null, response);
